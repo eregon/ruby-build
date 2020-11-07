@@ -588,11 +588,15 @@ build_package_standard_build() {
     if [ -z "$CC" ] && is_mac -ge 1010; then
       export CC=clang
     fi
+    echo ${!PACKAGE_CONFIGURE:-./configure} --prefix="${!PACKAGE_PREFIX_PATH:-$PREFIX_PATH}" \
+      "${!PACKAGE_CONFIGURE_OPTS_ARRAY}" $CONFIGURE_OPTS ${!PACKAGE_CONFIGURE_OPTS}
     ${!PACKAGE_CONFIGURE:-./configure} --prefix="${!PACKAGE_PREFIX_PATH:-$PREFIX_PATH}" \
       "${!PACKAGE_CONFIGURE_OPTS_ARRAY}" $CONFIGURE_OPTS ${!PACKAGE_CONFIGURE_OPTS} || return 1
   ) >&4 2>&1
 
-  { "$MAKE" "${!PACKAGE_MAKE_OPTS_ARRAY}" $MAKE_OPTS ${!PACKAGE_MAKE_OPTS}
+  {
+    echo "$MAKE" "${!PACKAGE_MAKE_OPTS_ARRAY}" $MAKE_OPTS ${!PACKAGE_MAKE_OPTS}
+    "$MAKE" "${!PACKAGE_MAKE_OPTS_ARRAY}" $MAKE_OPTS ${!PACKAGE_MAKE_OPTS}
   } >&4 2>&1
 }
 
@@ -603,8 +607,10 @@ build_package_standard_install() {
   local PACKAGE_MAKE_INSTALL_OPTS="${package_var_name}_MAKE_INSTALL_OPTS"
   local PACKAGE_MAKE_INSTALL_OPTS_ARRAY="${package_var_name}_MAKE_INSTALL_OPTS_ARRAY[@]"
 
-  { "$MAKE" ${MAKE_INSTALL_TARGET:-install} "${!PACKAGE_MAKE_INSTALL_OPTS_ARRAY}" $MAKE_INSTALL_OPTS ${!PACKAGE_MAKE_INSTALL_OPTS}
-  } >&4 2>&1
+  {
+    echo "$MAKE" ${MAKE_INSTALL_TARGET:-install} "${!PACKAGE_MAKE_INSTALL_OPTS_ARRAY}" $MAKE_INSTALL_OPTS ${!PACKAGE_MAKE_INSTALL_OPTS}
+    "$MAKE" ${MAKE_INSTALL_TARGET:-install} "${!PACKAGE_MAKE_INSTALL_OPTS_ARRAY}" $MAKE_INSTALL_OPTS ${!PACKAGE_MAKE_INSTALL_OPTS}
+> } >&4 2>&1
 }
 
 build_package_standard_install_with_bundled_gems() {
