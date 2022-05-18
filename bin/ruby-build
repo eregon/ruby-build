@@ -1133,21 +1133,17 @@ build_package_openssl() {
   # gives precedence to the last -j option, so we can override that.
   package_option openssl make -j 1
 
-  if is_mac; then
-    # Use install_sw install_ssldirs instead of install to skip building docs which is slow.
-    # OpenSSL 1.1+ also needs install_ssldirs, 1.0 does not have that target.
-    if [[ "$1" == openssl-1.0.* ]]; then
-      MAKE_INSTALL_TARGET="install_sw" build_package_standard "$@"
-    else
-      MAKE_INSTALL_TARGET="install_sw install_ssldirs" build_package_standard "$@"
-    fi
+  # Use install_sw install_ssldirs instead of install to skip building docs which is slow.
+  # OpenSSL 1.1+ also needs install_ssldirs, 1.0 does not have that target.
+  if [[ "$1" == openssl-1.0.* ]]; then
+    MAKE_INSTALL_TARGET="install_sw" build_package_standard "$@"
   else
-    build_package_standard "$@"
+    MAKE_INSTALL_TARGET="install_sw install_ssldirs" build_package_standard "$@"
   fi
 
+  local pem_file="$OPENSSLDIR/cert.pem"
   if is_mac; then
     # Extract root certs from the system keychain in .pem format and rehash.
-    local pem_file="$OPENSSLDIR/cert.pem"
     security find-certificate -a -p /Library/Keychains/System.keychain > "$pem_file"
     security find-certificate -a -p /System/Library/Keychains/SystemRootCertificates.keychain >> "$pem_file"
   elif [ -e /etc/pki/tls/cert.pem ]; then # RedHat
