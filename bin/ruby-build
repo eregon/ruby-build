@@ -1082,7 +1082,7 @@ has_broken_mac_openssl() {
 }
 
 has_openssl_3() {
-  local openssl_version="$(/usr/bin/openssl version 2>/dev/null || true)"
+  local openssl_version="$(openssl version 2>/dev/null || true)"
   [[ $openssl_version = "OpenSSL 3"?* ]] &&
   [[ "$RUBY_CONFIGURE_OPTS" != *--with-openssl-dir=* ]]
 }
