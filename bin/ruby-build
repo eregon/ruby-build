@@ -1087,7 +1087,7 @@ has_openssl_3() {
   [[ "$RUBY_CONFIGURE_OPTS" != *--with-openssl-dir=* ]]
 }
 
-has_openssl_3_or_broken_mac_openssl() {
+needs_openssl() {
   has_openssl_3 || has_broken_mac_openssl
 }
 
