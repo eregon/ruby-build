@@ -1143,7 +1143,7 @@ build_package_openssl() {
 
   local pem_file="$OPENSSLDIR/cert.pem"
   if is_mac; then
-    # Extract root certs from the system keychain in .pem format and rehash.
+    # Extract root certs from the system keychain in .pem format.
     security find-certificate -a -p /Library/Keychains/System.keychain > "$pem_file"
     security find-certificate -a -p /System/Library/Keychains/SystemRootCertificates.keychain >> "$pem_file"
   elif [ -e /etc/pki/tls/cert.pem ]; then # RedHat
