@@ -1148,17 +1148,17 @@ build_package_openssl() {
   elif [ -e /etc/pki/tls/cert.pem ]; then # RedHat
     # See https://github.com/rubygems/rubygems/issues/2415#issuecomment-509806259
     rm -rf "$OPENSSLDIR/certs" "$pem_file"
-    ln -s /etc/pki/tls/certs "$OPENSSLDIR"
+    ln -s /etc/pki/tls/certs "$OPENSSLDIR/certs"
     ln -s /etc/pki/tls/cert.pem "$pem_file"
   elif [ -e /etc/ssl/certs/ca-certificates.crt ]; then # Debian
     # See https://github.com/rubygems/rubygems/issues/2415#issuecomment-509806259
     rm -rf "$OPENSSLDIR/certs" "$pem_file"
-    ln -s /etc/ssl/certs "$OPENSSLDIR"
+    ln -s /etc/ssl/certs "$OPENSSLDIR/certs"
     ln -s /etc/ssl/certs/ca-certificates.crt "$pem_file"
-  elif type openssl &>/dev/null; then
+  elif type -p openssl >/dev/null; then
     # symlink to the system openssl certs
     local SYSTEM_OPENSSLDIR
-    SYSTEM_OPENSSLDIR=$(openssl version -d | sed -e 's/.*: "//' -e 's/"$//' || true)
+    SYSTEM_OPENSSLDIR=$(openssl version -d 2>/dev/null | cut -d'"' -f2)
     if [ -n "$SYSTEM_OPENSSLDIR" ]; then
       ln -sf "$SYSTEM_OPENSSLDIR/cert.pem" "$OPENSSLDIR/cert.pem"
       ln -snf "$SYSTEM_OPENSSLDIR/certs" "$OPENSSLDIR/certs"
