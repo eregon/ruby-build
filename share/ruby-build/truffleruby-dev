@@ -1,19 +1,21 @@
 platform="$(uname -s)-$(uname -m)"
 case $platform in
 Linux-x86_64)
-  install_package "truffleruby-head" "https://github.com/ruby/truffleruby-dev-builder/releases/latest/download/truffleruby-head-ubuntu-20.04.tar.gz" truffleruby
+  url=$(curl https://raw.githubusercontent.com/graalvm/graal-languages-ea-builds/main/truffleruby/versions/latest-native-linux-amd64.url)
   ;;
 Linux-aarch64)
-  install_package "truffleruby-head" "https://github.com/graalvm/graalvm-ce-dev-builds/releases/latest/download/truffleruby-community-dev-linux-aarch64.tar.gz" truffleruby
+  url=$(curl https://raw.githubusercontent.com/graalvm/graal-languages-ea-builds/main/truffleruby/versions/latest-native-linux-aarch64.url)
   ;;
 Darwin-x86_64)
-  install_package "truffleruby-head" "https://github.com/ruby/truffleruby-dev-builder/releases/latest/download/truffleruby-head-macos-latest.tar.gz" truffleruby
+  url=$(curl https://raw.githubusercontent.com/graalvm/graal-languages-ea-builds/main/truffleruby/versions/latest-native-darwin-amd64.url)
   ;;
 Darwin-arm64)
-  install_package "truffleruby-head" "https://github.com/ruby/truffleruby-dev-builder/releases/latest/download/truffleruby-head-macos-13-arm64.tar.gz" truffleruby
+  url=$(curl https://raw.githubusercontent.com/graalvm/graal-languages-ea-builds/main/truffleruby/versions/latest-native-darwin-aarch64.url)
   ;;
 *)
   colorize 1 "Unsupported platform: $platform"
   return 1
   ;;
 esac
+
+install_package "truffleruby-head" "$url" truffleruby
